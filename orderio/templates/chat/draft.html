@@ -11,85 +11,85 @@
       <!-- Users box-->
       <div class="col-5 px-0">
         <div class="bg-white">
-  
           <div class="bg-gray px-4 py-2 bg-light">
             <p class="h5 mb-0 py-1">Recent</p>
           </div>
-  
-          <div class="messages-box">
+          
+          <div class="messages-box"> 
             <div class="list-group rounded-0">
-
-              
-              
               {% for thread in threads %}
-              <a href="#" class="{% if forloop.first %}list-group-item list-group-item-action active text-white rounded-0{%else%}list-group-item list-group-item-action list-group-item-light rounded-0{% endif %}">
-                <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
+              <a class="list-group-item list-group-item-action {% if forloop.first %} active {% else %} list-group-item-light{% endif %}rounded-0"
+              chat-id="chat_{{ thread.id }}"
+              other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
+              >
+                <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" 
+                  alt="user" width="50" class="rounded-circle">
                   <div class="media-body ml-4">
                     <div class="d-flex align-items-center justify-content-between mb-1">
-                      <h6 class="mb-0">{% if thread.first_person == user %}
-                        <span>{{ thread.second_person.username }}</span>
-                    {% else %}
-                        <span>{{ thread.first_person.username }}</span>
-                    {% endif %}</h6><small class="small font-weight-bold">14 Dec</small>
+                      <h6 class="mb-0 fw-bold">
+                        {% if thread.first_person == user %}
+                                <span>{{ thread.second_person.username }}</span>
+                        {% else %}
+                            <span >{{ thread.first_person.username }}</span>
+                        {% endif %}
+                      </h6><small class="small font-weight-bold" >
+                        {{thread.chatmessage_thread.last.timestamp|date:"d D"}}
+                      </small>
                     </div>
-                    <p class="font-italic {% if forloop.first %}text-white{%else%}text-muted{% endif %} mb-0 text-small">Lorem ipsum dolor sit amet, consectetur. incididunt ut labore.</p>
+                    <p class="font-italic mb-0  text-small">
+                      {{thread.chatmessage_thread.last.message}}
+                    </p>
                   </div>
                 </div>
               </a>
               {% endfor %}
-                <ui class="contacts">
-                    {% for thread in threads %}
-                        <li class="{% if forloop.first %}active{% endif %} contact-li" chat-id="chat_{{ thread.id }}" style="cursor: pointer">
-                            <div class="d-flex bd-highlight">
-                                <div class="img_cont">
-                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
-                                    <span class="online_icon"></span>
-                                </div>
-                                <div class="user_info">
-                                    {% if thread.first_person == user %}
-                                        <span>{{ thread.second_person.username }}</span>
-                                    {% else %}
-                                        <span>{{ thread.first_person.username }}</span>
-                                    {% endif %}
-
-{#                                            <p>Kalid is online</p>#}
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                  </ui>
               
+  
+              
+
   
             </div>
           </div>
         </div>
       </div>
       <!-- Chat Box-->
-      <div class="col-7 px-0 msg_card_body">
-        <div class="px-4 py-5 chat-box bg-white">
-          <!-- Sender Message-->
-          <div class="media w-50 mb-3"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
-            <div class="media-body ml-3">
-              <div class="bg-light rounded py-2 px-3 mb-2">
-                <p class="text-small mb-0 text-muted">Test which is a new approach all solutions</p>
+      <div class="col-7 px-0">
+        {% for thread in threads %}
+          <div id="messages-wrapper"  
+          class="{% if forloop.first %}hide is_active{% else %}hide{% endif %}"
+          chat-id="chat_{{ thread.id }}"
+          other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
+          >
+          <div class="px-4 py-5 chat-box bg-white" id="msg_card_body">
+            {% for chat in thread.chatmessage_thread.all %}
+            {% if chat.user == user %}
+            <div class="media w-50 ml-auto mb-3">
+              <div class="media-body">
+                <div class="bg-primary rounded py-2 px-3 mb-2">
+                  <p class="text-small mb-0 text-white">{{ chat.message }}</p>
+                </div>
+                <p class="small text-muted">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d D" }}</p>
               </div>
-              <p class="small text-muted">12:00 PM | Aug 13</p>
             </div>
-          </div>
-  
-          <!-- Reciever Message-->
-          <div class="media w-50 ml-auto mb-3">
-            <div class="media-body">
-              <div class="bg-primary rounded py-2 px-3 mb-2">
-                <p class="text-small mb-0 text-white">Test which is a new approach to have all solutions</p>
-              </div>
-              <p class="small text-muted">12:00 PM | Aug 13</p>
+           
+        {% else %}
+        <div class="media w-50 mb-3">
+          <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
+          <div class="media-body ml-3">
+            <div class="bg-light rounded py-2 px-3 mb-2">
+              <p class="text-small mb-0 text-muted">{{ chat.message }}</p>
             </div>
+            <p class="small text-muted">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d D" }}</p>
           </div>
-  
-          
-  
         </div>
+        {% endif %}
+            {% endfor %}
+            
+            
+          </div>
+          </div>
+        {% endfor %}
+        
         <input type="hidden" id="logged-in-user" value="{{ user.id }}">
         <!-- Typing area -->
         <form action="#" class="bg-light" id="send-message-form">
@@ -108,5 +108,5 @@
       </div>
     </div>
   </div>
-  <script src="{% static 'js/messages.js' %}"></script>
+  <script src="{% static 'js/chat-draft.js' %}"></script>
 {% endblock content %}

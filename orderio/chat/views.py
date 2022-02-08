@@ -10,6 +10,10 @@ def index(request):
         "threads" : threads
     }
     return render(request,'chat/index.html',context)
-
+@login_required
 def draft(request):
-    return render(request,"chat/draft.html")
+    threads = Thread.objects.by_user(user=request.user).prefetch_related('chatmessage_thread')
+    context = {
+        "threads" : threads
+    }
+    return render(request,"chat/draft.html",context)

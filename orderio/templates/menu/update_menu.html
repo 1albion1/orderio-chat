@@ -1,0 +1,116 @@
+{% extends "../manager-base.html" %}
+{% load static %}
+{% block title %}
+{{menu.get_day_name}} Menu Edit
+{% endblock title %}
+{% block content %}
+
+<div class="container-fluid">
+  <a href="{% url 'menu:weekly_menu' %}">BACK</a>
+  <!-- meal choosing -->
+  <div class="row " >
+    {% for message in messages %}
+<div class="alert alert-{{message.level_tag}}  alert-dismissible fade show">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+    <div class="col-lg-8 col-md-8  card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">You are editing menu for {{menu.get_day_name}}</h6>
+      </div>
+      <div class="table-responsive" >
+
+        
+        <table class="table table-bordered" id="dataTable">
+          <thead>
+            <tr class="bg-dark text-white">
+              <th>Meal</th>
+              <th>Calories</th>
+              <th>Price</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for meal in meals %}
+            {% if meal not in menu_meals %}
+            <tr>
+              <td><a href="{{meal.get_absolute_url}}">{{meal.name}}</a></td>
+              <td>{{meal.calories}} </td>
+              <td>{{meal.price}} </td>
+              <td>{{meal.description|truncatechars:50}}</td>
+              <td>{{meal.category.name}}</td>
+              <td>
+                {% if item_count < 100 %}
+                
+                <a class="btn btn-primary" href="{% url 'menu:add_to_menu' meal.pk menu.pk %}">Add</a>
+
+                {% else %}
+                <button class="btn btn-primary disabled" >Add</button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+
+    
+    <div  class="col-md-4 col-lg-4 col-sm-12 order-md-last">
+      <div id="menu-items">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-primary">Your menu</span>
+        
+        <span class="badge bg-primary rounded-pill">{{item_count}}</span>
+      </h4>
+      
+      <ul class="list-group mb-3">
+        {% if item_count == menu_cap %}
+            
+        <div class="alert alert-danger">Menu is at maximum capacity!</div>
+        {% endif %}
+        {% for meal in menu_meals %}
+        <li class="list-group-item d-flex justify-content-between lh-sm">
+          <div>
+            <h6 class="my-0">{{meal.name}}</h6>
+            <small class="text-muted">{{meal.description|truncatechars:30}}</small>
+          </div>
+          <span class="text-muted">${{meal.price}} 
+            <a href="{% url 'menu:remove_from_menu' meal.pk menu.pk %}">
+            <i class="bi bi-x-lg text-danger"></i>
+            </a>
+          </button></span>
+          
+        </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Menu total price (USD)</span>
+          <strong>${{item_price_total}}</strong>
+        </li>
+      </ul>
+      
+
+      <form class="card p-2" action="" method="post" >
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="avability" class="form-control">Avability (Hours)</label>
+          <input type="number" class="form-control" placeholder="Avability" name="avability" value="{{menu.avability}}">
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- table filter js -->
+<script src="{% static 'js/table-filter.js' %}"></script>
+
+{% endblock content %}

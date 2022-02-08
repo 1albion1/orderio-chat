@@ -1,0 +1,136 @@
+{% extends "../manager-base.html" %}
+{% load static %}
+{% block title %}
+New Menu
+{% endblock title %}
+{% block content %}
+
+<div class="container-fluid" >
+  <h1 class="h3 mb-2 text-gray-800">Create menu</h1>
+  <p class="mb-4">Add or remove meals from the menu. Click continue when you are done.</p>
+  <!-- meal choosing -->
+  <div class="row " >
+    <div class="col-lg-7 col-md-7  card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Meal List</h6>
+      </div>
+      <div class="table-responsive" >
+          <table  class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr class="bg-dark text-white">
+                <th>Meal</th>
+                <th>Calories</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="meal-table-body">
+              {% for meal in meals %}
+                <tr>
+                  
+                  <td><a href="{{meal.get_absolute_url}}">{{meal.name}}</a></td>
+                  <td>{{meal.calories}} </td>
+                  <td>{{meal.price}}
+                    
+                    
+                    
+                  <td>{{meal.description|truncatechars:50}}</td>
+                  <td>{{meal.category.name}}</td>
+                  <td>
+                    
+                    <button class="btn btn-primary " id="add-btn{{meal.id}}" value="{{meal.id}}"
+                      data-url="{% url 'menu:update_session' %}" {% if bag|length >= menu_cap %}disabled{% endif %} >Add</button>
+
+                      
+                    
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        
+      </div>
+    </div>
+    <div class="col-md-5 col-lg-4 order-md-last">
+      <div id="menu-items">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-primary">Your menu</span>
+
+          <span class="badge bg-primary rounded-pill" id="stuff" 
+          data-bl = "{{bag|length}}" data-mc= "{{menu_cap}}"
+          >{% with bag|length as b %}
+            {{b}}
+            {% endwith %}</span>
+        </h4>
+
+        <ul class="list-group mb-3">
+          {% if bag|length >= menu_cap %}
+          <div class="alert alert-danger">Maximum meals allowed are {{menu_cap}}!</div>
+          
+          {% endif %}
+          {% for i in bag.get_menu_items.values %}
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">{{i.name}}</h6>
+              <small class="text-muted">{{i.description|truncatechars:30}}</small>
+            </div>
+            <span class="text-muted">${{i.price}}
+              <button class="btn" id="del-btn{{i.id}}" value="{{i.id}}" data-url="{% url 'menu:update_session' %}">
+                <i class="bi bi-x-lg text-danger"></i>
+              </button></span>
+
+          </li>
+          {% endfor %}
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Menu total price (USD)</span>
+            <strong>${{bag.get_total_price|floatformat:2}}</strong>
+          </li>
+        </ul>
+        {% csrf_token %}
+        {% if bag|length > 0 %}
+        <div class="card p-2 " id="show">
+          <button type="submit" class="btn btn-info hw-3 text-white">Continue</button>
+        </div>
+        <form class="card p-2 invisible" action="" method="post">
+          {% csrf_token %}
+          <div class="input-group">
+            <select name="weekday">
+              {% for option in available_options %}
+              <option value="{{option}}">
+                {% for day in all_options %}
+                {% if day.0 == option %}
+                {{day.1}}
+                {% endif %}
+                {% endfor %}
+              </option>
+              {% endfor %}
+            </select>
+            <input type="number" required name="menu_avability" class="form-control" placeholder="Avability">
+            <button type="submit" class="btn btn-success">Create Menu</button>
+          </div>
+        </form>
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- table filter js -->
+<script src="{% static 'js/table-filter.js' %}"></script>
+
+<!-- ajax js -->
+<script src="{% static 'js/create_menu.js' %}">
+</script>
+
+<!-- continue -->
+<script>
+  $(document).on("click", "#show", function show () {
+    $("#show").hide();
+    $("form").removeClass('invisible').addClass('visible');
+  });
+</script>
+{% endblock%}

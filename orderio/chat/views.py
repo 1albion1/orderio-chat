@@ -10,3 +10,6 @@ def index(request):
         "threads" : threads
     }
     return render(request,'chat/index.html',context)
+
+def draft(request):
+    return render(request,"chat/draft.html")

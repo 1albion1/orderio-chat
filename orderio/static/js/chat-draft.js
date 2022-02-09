@@ -12,8 +12,10 @@ let message_body = $('.msg_card_body')
 let send_message_form = $('#send-message-form')
 var socket = new WebSocket(endpoint)
 $( document ).ready(function() {
-    console.log( "ready!" );
-    message_body.scrollTop(message_body.prop("scrollHeight"));
+    message_body.each(function() {
+        $( this ).scrollTop($( this ).prop("scrollHeight"));
+      });
+    
     
 });
 
@@ -121,3 +123,8 @@ function get_active_thread_id(){
 
 
 
+$(document).on('change',"#user-select",function(){
+    
+    url = $('#user-select option:selected').data("url");
+    window.location.href = url;
+})

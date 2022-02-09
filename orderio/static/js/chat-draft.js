@@ -58,6 +58,7 @@ function newMessage(message, sent_by_id, thread_id) {
 	}
 	let message_element;
 	let chat_id = 'chat_' + thread_id
+    let date = new Date()
 	if(sent_by_id == USER_ID){
 	    message_element = `
         <div class="media w-50 ml-auto mb-3">
@@ -65,7 +66,7 @@ function newMessage(message, sent_by_id, thread_id) {
           <div class="bg-primary rounded py-2 px-3 mb-2">
             <p class="text-small mb-0 text-white">${message}</p>
           </div>
-          <p class="small text-muted">00:00 | 1 Jan</p>
+          <p class="small text-muted text-uppercase">${("0" + date.getHours()).slice(-2)}:${date.getMinutes()} | ${("0" + date.getDay()).slice(-2)}-${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear()}</p>
         </div>
       </div>
 	    `
@@ -75,10 +76,10 @@ function newMessage(message, sent_by_id, thread_id) {
         <div class="media w-50 mb-3">
         <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
         <div class="media-body ml-3">
-          <div class="bg-light rounded py-2 px-3 mb-2">
-            <p class="text-small mb-0 text-muted">${message}</p>
+          <div class="bg-dark rounded py-2 px-3 mb-2">
+            <p class="text-small mb-0 text-white">${message}</p>
           </div>
-          <p class="small text-muted">22:22 | 2 Feb</p>
+          <p class="small text-muted text-uppercase">${("0" + date.getHours()).slice(-2)}:${date.getMinutes()} | ${("0" + date.getDay()).slice(-2)}-${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear()}</p>
         </div>
       </div>
         `
@@ -88,6 +89,7 @@ function newMessage(message, sent_by_id, thread_id) {
     let message_body = $('#messages-wrapper[chat-id="' + chat_id + '"] #msg_card_body')
 	message_body.append($(message_element))
     message_body.scrollTop(message_body.prop("scrollHeight"));
+    
 	input_message.val(null);
 }
 $('.list-group a').on('click', function (){
@@ -112,3 +114,6 @@ function get_active_thread_id(){
     let thread_id = chat_id.replace('chat_', '')
     return thread_id
 }
+
+
+

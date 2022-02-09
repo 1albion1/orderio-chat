@@ -33,11 +33,15 @@
                             <span >{{ thread.first_person.username }}</span>
                         {% endif %}
                       </h6><small class="small font-weight-bold" >
-                        {{thread.chatmessage_thread.last.timestamp|date:"d D"}}
+                        {{thread.chatmessage_thread.last.timestamp|date:"d-b-Y"}}
                       </small>
                     </div>
-                    <p class="font-italic mb-0  text-small">
-                      {{thread.chatmessage_thread.last.message}}
+                    <p class="font-italic mb-0  text-small" id="contact-message">
+                      {% if thread.first_person == user %}
+                                <span>{{ thread.second_person.role.name }}</span>
+                        {% else %}
+                            <span >{{ thread.first_person.role.name }}</span>
+                        {% endif %}
                     </p>
                   </div>
                 </div>
@@ -68,7 +72,7 @@
                 <div class="bg-primary rounded py-2 px-3 mb-2">
                   <p class="text-small mb-0 text-white">{{ chat.message }}</p>
                 </div>
-                <p class="small text-muted">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d D" }}</p>
+                <p class="small text-muted text-uppercase">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d-b-Y" }}</p>
               </div>
             </div>
            
@@ -76,10 +80,10 @@
         <div class="media w-50 mb-3">
           <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
           <div class="media-body ml-3">
-            <div class="bg-light rounded py-2 px-3 mb-2">
-              <p class="text-small mb-0 text-muted">{{ chat.message }}</p>
+            <div class="bg-dark rounded py-2 px-3 mb-2">
+              <p class="text-small mb-0 text-white">{{ chat.message }}</p>
             </div>
-            <p class="small text-muted">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d D" }}</p>
+            <p class="small text-muted text-uppercase">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d-b-Y" }}</p>
           </div>
         </div>
         {% endif %}

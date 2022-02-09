@@ -79,6 +79,7 @@ TEMPLATES = [
                 'manager.context_processors.pending_orders', #custom
                 'notification.context_processors.notifications', #custom
                 'menu.context_processors.menu_capacity', #custom
+                'chat.context_processors.threads_list',
             ],
         },
     },
@@ -122,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Rome'
 
 USE_I18N = True
 

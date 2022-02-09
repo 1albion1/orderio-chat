@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from chat.models import Thread
+from django.shortcuts import render,redirect
+from chat.models import ChatMessage, Thread
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -17,3 +17,9 @@ def draft(request):
         "threads" : threads
     }
     return render(request,"chat/draft.html",context)
+
+def read_message(request,pk):
+    message = ChatMessage.objects.get(pk=pk)
+    message.read = True
+    message.save()
+    return redirect("chat:draft")

@@ -22,4 +22,15 @@ def read_message(request,pk):
     message = ChatMessage.objects.get(pk=pk)
     message.read = True
     message.save()
+    thread  = message.thread
+    threads = Thread.objects.by_user(user=request.user).prefetch_related('chatmessage_thread')
+    if thread.first_person==request.user:
+        active_user_id = thread.second_person.id
+    else:
+        active_user_id = thread.first_person.id
+    request.session["active_user_id"]=active_user_id
+    context = {
+        "active_user_id" : active_user_id,
+        "threads" : threads
+    }
     return redirect("chat:draft")

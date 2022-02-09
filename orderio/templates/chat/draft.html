@@ -6,7 +6,7 @@
 <div class="container">
     <!-- For demo purpose-->
     
-  
+    
     <div class="row rounded-lg overflow-hidden shadow">
       <!-- Users box-->
       <div class="col-5 px-0">
@@ -18,7 +18,14 @@
           <div class="messages-box"> 
             <div class="list-group rounded-0">
               {% for thread in threads %}
-              <a class="list-group-item list-group-item-action {% if forloop.first %} active {% else %} list-group-item-light{% endif %}rounded-0"
+              <a class="list-group-item list-group-item-action 
+      {% if request.session.active_user_id %}
+      {% if thread.first_person.id == request.session.active_user_id or thread.second_person.id == request.session.active_user_id %}
+      active
+      {% endif %}
+      {% else %}
+      {% if forloop.first %} active {% else %} list-group-item-light{% endif %}
+      {% endif %} rounded-0"
               chat-id="chat_{{ thread.id }}"
               other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
               >
@@ -28,10 +35,10 @@
                     <div class="d-flex align-items-center justify-content-between mb-1">
                       <h6 class="mb-0 fw-bold">
                         {% if thread.first_person == user %}
-                                <span>{{ thread.second_person.username }}</span>
-                        {% else %}
-                            <span >{{ thread.first_person.username }}</span>
-                        {% endif %}
+              <span>{{ thread.second_person.username }}</span>
+      {% else %}
+          <span >{{ thread.first_person.username }}</span>
+      {% endif %}
                       </h6><small class="small font-weight-bold" >
                         {{thread.chatmessage_thread.last.timestamp|date:"d-b-Y"}}
                       </small>
@@ -49,7 +56,12 @@
               {% endfor %}
               
   
-              
+              {% if thread.first_person == user %}
+              <span>{{ thread.second_person.username }}</span>
+      {% else %}
+          <span >{{ thread.first_person.username }}</span>
+      {% endif %}
+                  
 
   
             </div>
@@ -57,20 +69,30 @@
         </div>
       </div>
       <!-- Chat Box-->
+      
       <div class="col-7 px-0">
         {% for thread in threads %}
           <div id="messages-wrapper"  
-          class="{% if forloop.first %}hide is_active{% else %}hide{% endif %}"
+          class="{% if request.session.active_user_id %}
+          {% if thread.first_person.id == request.session.active_user_id or thread.second_person.id == request.session.active_user_id %}
+          hide is_active
+          {% else %}
+          hide
+          {% endif %}
+          
+          {% else %}
+          {% if forloop.first %}hide is_active{% else %}hide{% endif %}
+          {% endif %}  "
           chat-id="chat_{{ thread.id }}"
           other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
           >
-          <div class="px-4 py-5 chat-box bg-white" id="msg_card_body">
+          <div class="px-4 py-5 chat-box bg-white msg_card_body" id="msg_card_bodychat_{{ thread.id }}">
             {% for chat in thread.chatmessage_thread.all %}
             {% if chat.user == user %}
             <div class="media w-50 ml-auto mb-3">
               <div class="media-body">
                 <div class="bg-primary rounded py-2 px-3 mb-2">
-                  <p class="text-small mb-0 text-white">{{ chat.message }}</p>
+                  <p class="text-small mb-0 text-white">{{ chat.message }} </p>
                 </div>
                 <p class="small text-muted text-uppercase">{{ chat.timestamp|time:"H:i" }} | {{ chat.timestamp|date:"d-b-Y" }}</p>
               </div>

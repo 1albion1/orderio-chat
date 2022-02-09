@@ -197,6 +197,46 @@
                             </div>
                         </li>
 
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">{{unread}}</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                {% for thread in threads_list %}
+                                
+                                
+                                <a class="dropdown-item d-flex align-items-center" href='{% url "chat:read_message" thread.chatmessage_thread.last.pk%} '>
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="{% if thread.first_person == user %}{{ thread.second_person.employee.profile_pic.url }}{% else %}{{ thread.first_person.employee.profile_pic.url }}{% endif %}"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    
+                                    <div class="{% if not thread.chatmessage_thread.last.read %}{% if not thread.chatmessage_thread.last.user == request.user %}font-weight-bold{% endif %}{% endif %}">
+                                        <div class="text-truncate">{{thread.chatmessage_thread.last.message}}</div>
+                                        <div class="small text-gray-500">{% if thread.first_person == user %}
+                                            <span>{{ thread.second_person.username }}</span>
+                                            {% else %}
+                                                <span >{{ thread.first_person.username }}</span>
+                                            {% endif %}{{thread.chatmessage_thread.last.timestamp}}</div>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                                
+                                
+                                
+                               
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
                         
 
                         <!-- Nav Item - Messages -->

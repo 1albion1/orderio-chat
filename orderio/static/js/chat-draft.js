@@ -8,10 +8,14 @@ if(loc.protocol === 'https') {
 }
 let endpoint = wsStart + loc.host + loc.pathname
 let input_message = $('#input-message')
-let message_body = $('#msg_card_body')
+let message_body = $('.msg_card_body')
 let send_message_form = $('#send-message-form')
 var socket = new WebSocket(endpoint)
-message_body.scrollTop(message_body.prop("scrollHeight"));
+$( document ).ready(function() {
+    console.log( "ready!" );
+    message_body.scrollTop(message_body.prop("scrollHeight"));
+    
+});
 
 
 socket.onopen = async function(e){
@@ -86,7 +90,7 @@ function newMessage(message, sent_by_id, thread_id) {
 
     }
 
-    let message_body = $('#messages-wrapper[chat-id="' + chat_id + '"] #msg_card_body')
+    let message_body = $('#messages-wrapper[chat-id="' + chat_id + '"] .msg_card_body')
 	message_body.append($(message_element))
     message_body.scrollTop(message_body.prop("scrollHeight"));
     
@@ -100,7 +104,7 @@ $('.list-group a').on('click', function (){
     let chat_id = $(this).attr('chat-id')
     $('#messages-wrapper.is_active').removeClass('is_active')
     $('#messages-wrapper[chat-id="' + chat_id +'"]').addClass('is_active')
-
+    $("#msg_card_body"+chat_id).scrollTop($("#msg_card_body"+chat_id).prop("scrollHeight"));
 })
 
 function get_active_other_user_id(){

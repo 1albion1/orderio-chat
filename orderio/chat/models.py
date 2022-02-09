@@ -24,7 +24,8 @@ class Thread(models.Model):
     
     class Meta:
         unique_together = ['first_person','second_person']
-        
+    
+    
     
 
 class ChatMessage(models.Model):
@@ -32,3 +33,7 @@ class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)    
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    
+    
+        

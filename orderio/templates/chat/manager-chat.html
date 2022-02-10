@@ -1,8 +1,9 @@
 {% extends "../manager-base.html" %}
+
 {% load static %}
 {% block content %}
 <link href='{% static "css/chat-draft.css" %}' rel="stylesheet"> 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" integrity="sha512-yVvxUQV0QESBt1SyZbNJMAwyKvFTLMyXSyBHDO4BG5t7k/Lw34tyqlSDlKIrIENIzCl+RVUNjmCPG+V/GMesRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="container">
     <!-- For demo purpose-->
     
@@ -14,12 +15,12 @@
         <div class="bg-white">
           <div class="bg-gray px-4 py-2 bg-light">
             <p class="h5 mb-0 py-1">Recent
-              <select>
+              <select id="user-select"  class="chosen">
                 {% for user in users %}
                 {% if user.id != request.user.id %}
                   
                 
-                <option><a href='{% url "chat:create_thread" user.pk %}'>{{user.username}}</a></option>
+                <option value="{{user.id}}" data-url='{% url "chat:create_thread" user.pk %}'>{{user.username}}</option>
                 {% endif %}
                   {% endfor %}
               </select>
@@ -41,7 +42,8 @@
               chat-id="chat_{{ thread.id }}"
               other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
               >
-                <div class="media"><img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" 
+                <div class="media"><img src="{% if thread.first_person == user %}{{ thread.second_person.get_profile_pic_url }}{% elif thread.second_person == user %}{{ thread.first_person.get_profile_pic_url }}{% else %}{% endif %}" 
+                  onError="this.onerror=null;this.src='/img/default.png';"
                   alt="user" width="50" class="rounded-circle">
                   <div class="media-body ml-4">
                     <div class="d-flex align-items-center justify-content-between mb-1">
@@ -98,6 +100,7 @@
           chat-id="chat_{{ thread.id }}"
           other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}"
           >
+          
           <div class="px-4 py-5 chat-box full bg-white msg_card_body" id="msg_card_bodychat_{{ thread.id }}">
             {% for chat in thread.chatmessage_thread.all %}
             {% if chat.user == user %}
@@ -112,7 +115,7 @@
            
         {% else %}
         <div class="media w-50 mb-3">
-          <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
+          <img src="{{chat.user.employee.profile_pic.url}}" alt="user" width="50" class="rounded-circle">
           <div class="media-body ml-3">
             <div class="bg-dark rounded py-2 px-3 mb-2">
               <p class="text-small mb-0 text-white">{{ chat.message }}</p>
@@ -147,4 +150,8 @@
     </div>
   </div>
   <script src="{% static 'js/chat-draft.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha512-rMGGF4wg1R73ehtnxXBt5mbUfN9JUJwbk21KMlnLZDJh7BkPmeovBuddZCENJddHYYMkCh9hPFnPmS9sspki8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="text/javascript">
+    $(".chosen").chosen();
+  </script>
 {% endblock content %}

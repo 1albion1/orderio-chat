@@ -14,7 +14,7 @@ def index(request):
 
 @login_required
 def draft(request):
-    threads = Thread.objects.by_user(user=request.user).prefetch_related('chatmessage_thread')
+    threads = Thread.objects.by_user(user=request.user).order_by("-updated").prefetch_related('chatmessage_thread')
     context = {
         "threads" : threads,
         "users" : User.objects.all()
@@ -39,9 +39,12 @@ def read_message(request,pk):
     return redirect("chat:draft")
 
 def create_thread(request,pk):
-    second_person=User.objects.get(pk=pk)
-    thread = Thread(first_person=request.user,second_person=second_person)
-    thread.save()
-    cm = ChatMessage(thread=thread,user=request.user,message=f"Hi {second_person.username}")
-    cm.save()
+    try:
+        second_person=User.objects.get(pk=pk)
+        thread = Thread(first_person=request.user,second_person=second_person)
+        thread.save()
+        cm = ChatMessage(thread=thread,user=request.user,message=f"Hi {second_person.username}")
+        cm.save()
+    except:
+        pass
     return redirect("chat:draft")

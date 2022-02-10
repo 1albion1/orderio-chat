@@ -1,7 +1,7 @@
 from chat.models import Thread
 def threads_list(request):
     try:
-        threads = Thread.objects.by_user(user=request.user).prefetch_related('chatmessage_thread').order_by("updated")
+        threads = Thread.objects.by_user(user=request.user).order_by("-updated").prefetch_related('chatmessage_thread')
     except:
         threads = ""
         

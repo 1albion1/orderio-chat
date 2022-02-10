@@ -128,3 +128,10 @@ $(document).on('change',"#user-select",function(){
     url = $('#user-select option:selected').data("url");
     window.location.href = url;
 })
+
+
+$(document).ready(function(){
+    if($('img').attr('src') == '') { 
+       alert('got me'); 
+     }
+ });

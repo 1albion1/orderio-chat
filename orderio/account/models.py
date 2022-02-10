@@ -12,3 +12,10 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return self.username
+    
+    def get_profile_pic_url(self):
+        pic_url = self.employee.profile_pic.url
+        if pic_url:
+            return pic_url
+        else:
+            return '/img/default.png'
